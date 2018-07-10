@@ -12,5 +12,4 @@ if [ $www = _ ]; then
 fi
 
 cd $(dirname $0)/../www
-tcpserver -RHI localhost -u $www -g $www 0 80 eris -c -.
-
+tcpserver -RH -u $www -g $www 0 80 eris -c -.
