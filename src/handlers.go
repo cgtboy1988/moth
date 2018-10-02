@@ -21,6 +21,13 @@ type JSendData struct {
 	Description string `json:"description"`
 }
 
+type puzzleSubmission struct {
+	Id string
+	Cat string
+	Points string
+	Answer string
+}
+
 // ShowJSend renders a JSend response to w
 func ShowJSend(w http.ResponseWriter, status Status, short string, description string) {
 
@@ -242,6 +249,21 @@ func (ctx *Instance) answerHandler(w http.ResponseWriter, req *http.Request) {
 	category := req.FormValue("cat")
 	pointstr := req.FormValue("points")
 	answer := req.FormValue("answer")
+
+	/* Handle puzzle submissions of Content-Type: application/json */
+	var data puzzleSubmission
+	contenttype := req.Header.Get("Content-Type")
+	if contenttype == "application/json" {
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&data)
+		if err != nil {
+			panic(err)
+		}
+		teamid = data.Id
+		category = data.Cat
+		pointstr = data.Points
+		answer = data.Answer
+	}
 
 	points, err := strconv.Atoi(pointstr)
 	if err != nil {
